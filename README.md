@@ -16,14 +16,14 @@ $ docker build -t iggyblob/xampp .
 ## Running the image:
 This image uses the `/www` directory for your project's web content, so you need to mount your working directory from the host into the container:
 ```
-docker run --name xampp -p 2222:22 -p 8080:80 -d -v <project-directory>:/www iggyblob/xampp
+$ docker run --name xampp -p 2222:22 -p 8080:80 -d -v <project-directory>:/www iggyblob/xampp
 ```
 
 The command above will expose an Apache HTTP server on port `8080` as well as an SSH server on port `2222` .    
 Feel free to adapt the ports and/or container name according to your needs.
 
-URL to your project: [http://localhost:41062/www](http://localhost:8080/www)    
-XAMPP management interface: [http://localhost:41062/](http://localhost:8080/)
+URL to your project: [http://localhost:8080/www](http://localhost:8080/www)    
+XAMPP management interface: [http://localhost:8080/](http://localhost:8080/)
 
 ## Additional services
 
