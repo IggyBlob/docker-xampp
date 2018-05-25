@@ -1,55 +1,61 @@
-This image is intended for PHP+MySQL development. For convenience, it also runs SSH server to connect to. __Both MySQL and phpmyadmin use default XAMPP password__.
+# Docker XAMPP
+This Docker image provides an up-and-running PHP development environment based on the [XAMPP stack](https://www.apachefriends.org/index.html). For convenient access to the conatiner, an additional SSH server is available . __Please note that both mySQL and phpMyAdmin use the default XAMPP password settings__.
 
+## Building the image
+Clone or download the repository
+```
+$ git clone https://github.com/IggyBlob/docker-xampp.git
+$ cd docker-xampp
+```
+
+Build the image using `Dockerfile`
+```
+$ docker build -t iggyblob/xampp .
+```
 
 ## Running the image:
-
-This image uses /www directory for your page files, so you need to mount it.
-
+This image uses the `/www` directory for your project's web content, so you need to mount your working directory from the host into the container:
 ```
-docker run --name myXampp -p 41061:22 -p 41062:80 -d -v ~/my_web_pages:/www tomsik68/xampp
-```
-The command above will expose the SSH server on port 41061 and HTTP server on port 41062.    
-Feel free to use your own name for the container...
-
-To connect to your web page, visit this URL: [http://localhost:41062/www](http://localhost:41062/www)    
-And to open up the XAMPP interface: [http://localhost:41062/](http://localhost:41062/)
-
-## additional How tos
-
-### ssh connection
-
-default SSH password is 'root'.
-
-```
-ssh root@localhost -p 41061
+docker run --name xampp -p 2222:22 -p 8080:80 -d -v <project-directory>:/www iggyblob/xampp
 ```
 
-### get a shell terminal inside your container
+The command above will expose an Apache HTTP server on port `8080` as well as an SSH server on port `2222` .    
+Feel free to adapt the ports and/or container name according to your needs.
 
+URL to your project: [http://localhost:41062/www](http://localhost:8080/www)    
+XAMPP management interface: [http://localhost:41062/](http://localhost:8080/)
+
+## Additional services
+
+### SSH connection
+Please use the default SSH password `root` when connecting to the container.
 ```
-docker exec -ti myXampp bash
-```
-
-### use binaries provided by XAMPP
-
-Inside docker container:
-```
-export PATH=/opt/lampp/bin:$PATH
-```
-You can then use `mysql` and friends installed in `/opt/lampp/bin` in your current bash session. If you want this to persist, you need to add it to your user or system-wide `.bashrc` (inside container).
-
-### Use your own configuration
-
-In your home directory, create a `my_apache_conf` directory in which you place any number of apache configuration directive files. As soon as they end up with the .conf extension, they will be used by the image.
-
-```
-docker run --name myXampp -p 41061:22 -p 41062:80 -d -v ~/my_web_pages:/www  -v ~/my_apache_conf:/opt/lampp/apache2/conf.d tomsik68/xampp
+$ ssh root@localhost -p 2222
 ```
 
-### Restart the server
+### Mount a bash shell to your container
+```
+$ docker exec -ti xampp bash
+```
 
-Once you have modified configuration for example
+### Use XAMPP binaries inside the container
+If you need to use the `mysql` client or other binaries provided by the XAMPP package, extend the `PATH` variable inside your container to include the `/opt/lampp/bin` directory.
 ```
-docker exec myXampp /opt/lampp/lampp restart
+$ export PATH=/opt/lampp/bin:$PATH
 ```
-Please report any issues in issues section on github: https://github.com/tomsik68/docker-xampp/issues where we can track them conveniently. Thanks :)
+
+
+### Use a custom Apache configuration
+In your home directory, create a `my_apache_conf` directory in which you put your custom Apache `.conf` files. They will come into effect upon restarting Apache (see the next section for further information).
+```
+$ docker run --name xampp -p 2222:22 -p 8080:80 -d -v <project-directory>:/www  -v ~/my_apache_conf:/opt/lampp/apache2/conf.d iggyblob/xampp
+```
+
+### Restarting Apache
+If you modify configuration files you'll have to restart Apache:
+```
+$ docker exec xampp /opt/lampp/lampp restart
+```
+
+## Issues
+Please report an issue if you run into any problems while using this Docker image.
