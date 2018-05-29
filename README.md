@@ -1,22 +1,10 @@
 # Docker XAMPP
 This Docker image provides an up-and-running PHP development environment based on the [XAMPP stack](https://www.apachefriends.org/index.html). For convenient access to the conatiner, an additional SSH server is available . __Please note that both mySQL and phpMyAdmin use the default XAMPP password settings__.
 
-## Building the image
-Clone or download the repository
-```
-$ git clone https://github.com/IggyBlob/docker-xampp.git
-$ cd docker-xampp
-```
-
-Build the image using `Dockerfile`
-```
-$ docker build -t iggyblob/xampp .
-```
-
-## Running the image:
+## Running the image
 This image uses the `/www` directory for your project's web content, so you need to mount your working directory from the host into the container:
 ```
-$ docker run --name xampp -p 2222:22 -p 8080:80 -d -v <project-directory>:/www iggyblob/xampp
+$ docker run --name xampp -p 2222:22 -p 8080:80 -d -v <project-directory>:/www iggyblob/docker-xampp
 ```
 
 The command above will expose an Apache HTTP server on port `8080` as well as an SSH server on port `2222` .    
@@ -44,11 +32,10 @@ If you need to use the `mysql` client or other binaries provided by the XAMPP pa
 $ export PATH=/opt/lampp/bin:$PATH
 ```
 
-
 ### Use a custom Apache configuration
 In your home directory, create a `my_apache_conf` directory in which you put your custom Apache `.conf` files. They will come into effect upon restarting Apache (see the next section for further information).
 ```
-$ docker run --name xampp -p 2222:22 -p 8080:80 -d -v <project-directory>:/www  -v ~/my_apache_conf:/opt/lampp/apache2/conf.d iggyblob/xampp
+$ docker run --name xampp -p 2222:22 -p 8080:80 -d -v <project-directory>:/www  -v <project-directory>/my_apache_conf:/opt/lampp/apache2/conf.d iggyblob/docker-xampp
 ```
 
 ### Restarting Apache
